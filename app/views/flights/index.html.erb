@@ -1,0 +1,52 @@
+<h1>Search Flights</h1>
+<% if flash[:alert] %>
+  <p class="alert"><%= flash[:alert] %></p>
+<% end %>
+<% if flash[:notice] %>
+  <p class="notice"><%= flash[:notice] %></p>
+<% end %>
+<%= form_with model: @flight_search, url: root_path, method: :get do |form| %>
+  <section>
+    <%= form.label :from_airport, 'From' %>
+    <%= form.collection_select :from_airport, [[nil,'Select an Airport'], *Airport.all.map{|n| [n.id,n.code]}], :first, :second %>
+    <%= form.label :to_airport, "To" %>
+    <%= form.collection_select :to_airport, [[nil,'Select an Airport'], *Airport.all.map{|n| [n.id,n.code]}], :first, :second %>
+  </section>
+
+  <section>
+    <%= form.label :passengers %>
+    <%= form.collection_radio_buttons :passengers, (1..4).map{|n| [n, n]}, :first, :second %>
+  </section>
+
+  <section>
+    <%= form.label :departure %>
+    <%= form.collection_select :departure, [[nil,'Any Date'], *Flight.select(:departure).distinct.order(:departure).map{|d| [d.departure,d.departure]}], :first, :second %>
+  </section>
+
+  <section>
+    <%= form.submit 'Search' %>
+  </section>
+<% end %>
+
+<% if @flights %>
+  <h2>Flights:</h2>
+
+  <table>
+    <tr>
+      <th>From</th>
+      <th>To</th>
+      <th>Departure</th>
+      <th>Duration</th>
+      <th></th>
+    </tr>
+    <% @flights.each do |flight| %>
+      <tr>
+        <td><%= flight.from_airport.code %></td>
+        <td><%= flight.to_airport.code %></td>
+        <td><%= flight.departure.strftime('%d/%m/%Y %H:%M') %></td>
+        <td><%= "#{flight.duration / 1.hour}h #{flight.duration % 1.hour}m" %></td>
+        <td><%= link_to 'Book a Flight', new_booking_path(booking: {flight_id: flight.id, passengers: @flight_search.passengers}) %></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

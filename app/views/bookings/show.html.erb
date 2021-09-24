@@ -1,0 +1,37 @@
+<h1>Your Ticket</h1>
+
+<article class="ticket">
+  <table>
+    <tr>
+      <th colspan="4">Ticket for Flight #<%= @booking.flight.id %></th>
+    </tr>
+    <tr>
+      <th>From</th>
+      <th>To</th>
+      <th>Departs</th>
+      <th>Duration</th>
+    </tr>
+    <tr>
+      <td><%= @flight.from_airport.code %></td>
+      <td><%= @flight.to_airport.code %></td>
+      <td><%= @flight.formatted_departure %></td>
+      <td><%= @flight.formatted_duration %></td>
+    </tr>
+  </table>
+
+  <table>
+    <tr>
+      <th colspan="2">Passengers</th>
+    </tr>
+    <tr>
+      <th>name</th>
+      <th>email</th>
+    </tr>
+    <% @booking.passengers.each do |passenger| %>
+      <tr>
+        <td><%= passenger.name %></td>
+        <td><%= passenger.email %></td>
+      </tr>
+    <% end %>
+  </table>
+</article>

@@ -1,0 +1,41 @@
+<h1>Book a Flight</h1>
+<% if flash[:alert] %>
+  <p class="alert"><%= flash[:alert] %></p>
+<% end %>
+<% if flash[:notice] %>
+  <p class="notice"><%= flash[:notice] %></p>
+<% end %>
+<section>
+  <table>
+    <tr>
+      <th>From</th>
+      <th>To</th>
+      <th>Departure</th>
+      <th>Duration</th>
+    </tr>
+    <tr>
+      <td><%= @flight.from_airport.code %></td>
+      <td><%= @flight.to_airport.code %></td>
+      <td><%= @flight.departure.strftime('%d/%m/%Y %H:%M') %></td>
+      <td><%= "#{@flight.duration / 1.hour}h #{@flight.duration % 1.hour}m" %></td>
+    </tr>
+  </table>
+</section>
+<%= form_with model: @booking do |form| %>
+  <h2>Passengers</h2>
+  <ol>
+    <%= form.fields_for :passengers do |passenger_form| %>
+      <li>
+        <%= passenger_form.label :name %>
+        <%= passenger_form.text_field :name, required: true %>
+
+        <%= passenger_form.label :email %>
+        <%= passenger_form.email_field :email, required: true %>
+      </li>
+    <% end %>
+  </ol>
+  <section>
+    <%= form.hidden_field :flight_id %>
+    <%= form.submit :create %>
+  </section>
+<% end %>
